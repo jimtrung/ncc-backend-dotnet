@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Theater_Management_BE.src.Api.DTOs;
+﻿using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Theater_Management_BE.src.Application.Services;
 using Theater_Management_BE.src.Domain.Entities;
 
 namespace Theater_Management_BE.src.Api.Controllers
 {
     [ApiController]
-    [Route("/[controller]")]
+    [Route("[controller]")]
+    [Authorize]
     public class UserController : Controller
     {
         private readonly UserService _userService;
@@ -16,16 +18,19 @@ namespace Theater_Management_BE.src.Api.Controllers
             _userService = userService;
         }
 
-        [HttpPost("signup")]
-        public async Task<ActionResult<User>> SignUp([FromBody] SignUpRequest request)
+        [HttpGet]
+        public async Task<ActionResult<User>> GetUser()
         {
-            User user = new User();
-            user.Username = request.Username;
-            user.Email = request.Email;
-            user.PhoneNumber = request.PhoneNumber;
-            user.Password = request.Password;
+            var user = HttpContext.User;
 
-            return Ok(await _userService.SignUp(user));
+            if (user?.Identity == null || !user.Identity.IsAuthenticated)
+                return Unauthorized("You must log in first, lil ape 🍌🚬");
+
+            var userId = HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            User userInfo = await _userService.GetUserAsync(Guid.Parse(userId));
+
+            return Ok(userInfo);
         }
     }
 }

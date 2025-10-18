@@ -65,5 +65,12 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<User?> GetByUsernameOrEmailOrPhoneNumber(string username, string email, string phoneNumber)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => 
+                (u.Username == username) ||  (u.Email == email) || (u.PhoneNumber == phoneNumber)
+            );
+        }
     }
 }

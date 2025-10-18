@@ -11,5 +11,6 @@ namespace Theater_Management_BE.src.Application.Interfaces
         Task<User?> GetByPhoneNumberAsync(string value);
         Task<User?> UpdateAsync(User user);
         Task<bool> DeleteAsync(Guid userId);
+        Task<User?> GetByUsernameOrEmailOrPhoneNumber(string username, string email, string phoneNumber);
     }
 }
