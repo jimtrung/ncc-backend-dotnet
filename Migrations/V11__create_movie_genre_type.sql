@@ -1,0 +1,22 @@
+CREATE TYPE movie_genre AS ENUM (
+  'ACTION',
+  'ADVENTURE',
+  'COMEDY',
+  'DRAMA',
+  'ROMANCE',
+  'HORROR',
+  'THRILLER',
+  'MYSTERY',
+  'SCIENCE_FICTION',
+  'FANTASY',
+  'ANIMATION',
+  'FAMILY',
+  'MUSICAL',
+  'DOCUMENTARY',
+  'CRIME',
+  'WAR',
+  'WESTERN',
+  'HISTORICAL',
+  'SPORTS',
+  'BIOGRAPHY'
+);
