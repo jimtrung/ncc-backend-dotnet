@@ -9,6 +9,24 @@ namespace Theater_Management_BE.src.Infrastructure.Data
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Actor> Actors { get; set; }
+
+        public DbSet<Auditorium> Auditoriums { get; set; }
+
+        public DbSet<Country> Countries { get; set; }
+
+        public DbSet<Director> Directors { get; set; }
+
+        public DbSet<Movie> Movies { get; set; }
+
+        public DbSet<MovieActor> MovieActors { get; set; }
+
+        public DbSet<Seat> Seats { get; set; }
+
+        public DbSet<Showtime> Showtimes { get; set; }
+
+        public DbSet<Ticket> Tickets { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()

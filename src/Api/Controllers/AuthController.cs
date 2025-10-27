@@ -27,5 +27,13 @@ namespace Theater_Management_BE.src.Api.Controllers
         {
             return Ok(await _userService.SignIn(request));
         }
+
+        [HttpPost("refresh")]
+        public async Task<ActionResult<string>> Refresh([FromBody] RefreshRequest request)
+        {
+            string newAccessToken = _userService.Refresh(request.RefreshToken);
+            if (newAccessToken == null) return Unauthorized("Expired refresh token");
+            return Ok(newAccessToken);
+        }
     }
 }

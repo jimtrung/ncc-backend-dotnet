@@ -21,10 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="src\Application\Interfaces\" />
     <Folder Include="src\Application\Services\" />
     <Folder Include="src\Infrastructure\Data\" />
-    <Folder Include="src\Infrastructure\Repositories\" />
   </ItemGroup>
 
 </Project>

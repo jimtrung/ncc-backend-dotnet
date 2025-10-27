@@ -5,7 +5,7 @@ using Theater_Management_BE.src.Infrastructure.Data;
 
 namespace Theater_Management_BE.src.Infrastructure.Repositories
 {
-    public class UserRepository : IUserRepository 
+    public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
 
@@ -45,12 +45,9 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
         {
             var existingUser = await _context.Users.FindAsync(user.Id);
             if (existingUser == null)
-            {
                 return null;
-            }
 
-            existingUser = user;
-
+            _context.Entry(existingUser).CurrentValues.SetValues(user);
             await _context.SaveChangesAsync();
             return existingUser;
         }
@@ -68,8 +65,8 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
 
         public async Task<User?> GetByUsernameOrEmailOrPhoneNumber(string username, string email, string phoneNumber)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => 
-                (u.Username == username) ||  (u.Email == email) || (u.PhoneNumber == phoneNumber)
+            return await _context.Users.FirstOrDefaultAsync(u =>
+                (u.Username == username) || (u.Email == email) || (u.PhoneNumber == phoneNumber)
             );
         }
     }

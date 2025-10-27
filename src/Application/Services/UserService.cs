@@ -145,9 +145,10 @@ namespace Theater_Management_BE.src.Application.Services
             return _authTokenUtil.GenerateAccessToken(userId);
         }
 
-        public async Task<User?> GetUserAsync(Guid Id)
+        public async Task<User?> GetUserAsync(Guid id)
         {
-            return await _repo.GetByIdAsync(Id);
+            if (id == null) throw new InvalidUserDataException("ID is empty");
+            return await _repo.GetByIdAsync(id);
         }
     }
 }
