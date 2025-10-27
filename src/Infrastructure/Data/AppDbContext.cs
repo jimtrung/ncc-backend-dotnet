@@ -29,6 +29,9 @@ namespace Theater_Management_BE.src.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<MovieActor>()
+                .HasKey(ma => new { ma.MovieId, ma.ActorId });
+
             modelBuilder.Entity<User>()
                 .Property(u => u.Provider)
                 .HasConversion<string>();

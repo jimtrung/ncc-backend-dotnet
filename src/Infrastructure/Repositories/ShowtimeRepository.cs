@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Theater_Management_BE.src.Domain.Entities;
-using Theater_Management_BE.src.Domain.Repositories;
+using Theater_Management_BE.src.Application.Interfaces;
 using Theater_Management_BE.src.Infrastructure.Data;
 
 namespace Theater_Management_BE.src.Infrastructure.Repositories

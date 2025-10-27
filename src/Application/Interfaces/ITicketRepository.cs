@@ -1,6 +1,6 @@
 ﻿using Theater_Management_BE.src.Domain.Entities;
 
-namespace Theater_Management_BE.src.Domain.Repositories
+namespace Theater_Management_BE.src.Application.Interfaces
 {
     public interface ITicketRepository
     {
