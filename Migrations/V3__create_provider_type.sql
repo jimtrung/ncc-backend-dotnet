@@ -1,1 +1,1 @@
-CREATE TYPE provider_type AS ENUM ('LOCAL', 'GOOGLE');
+CREATE TYPE provider_type AS ENUM ('local', 'google');

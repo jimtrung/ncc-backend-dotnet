@@ -31,7 +31,7 @@ namespace Theater_Management_BE.src.Domain.Entities
         public string Token { get; set; }
 
         [Column("otp")]
-        public int OTP { get; set; }
+        public string OTP { get; set; }
 
         [Column("verified")]
         public bool Verified { get; set; }

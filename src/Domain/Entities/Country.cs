@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Theater_Management_BE.src.Domain.Entities
 {
     [Table("countries")]
     public class Country
     {
+        [Key]
         [Column("code")]
         public string Code { get; set; }
 

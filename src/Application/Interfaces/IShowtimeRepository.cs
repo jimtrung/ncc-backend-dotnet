@@ -4,9 +4,9 @@ namespace Theater_Management_BE.src.Domain.Repositories
 {
     public interface IShowtimeRepository
     {
-        Task InsertAsync(Showtime showtime);
-        Task<Showtime?> GetByFieldAsync(string fieldName, object fieldValue);
-        Task UpdateByFieldAsync(Guid id, string fieldName, object fieldValue);
-        Task DeleteAsync(Guid id);
+        void Insert(Showtime showtime);
+        Showtime? GetByField(string fieldName, object fieldValue);
+        void UpdateByField(Guid id, string fieldName, object fieldValue);
+        void Delete(Guid id);
     }
 }

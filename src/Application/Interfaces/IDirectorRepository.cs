@@ -1,13 +1,15 @@
 ﻿using Theater_Management_BE.src.Domain.Entities;
+using System.Collections.Generic;
 
 namespace Theater_Management_BE.src.Application.Interfaces
 {
     public interface IDirectorRepository
     {
-        Task<Director> AddAsync(Director director);
-        Task<Director?> GetByIdAsync(Guid id);
-        Task<Director?> GetByFieldAsync(string fieldName, object value);
-        Task<bool> UpdateByFieldAsync(Guid id, string fieldName, object value);
-        Task<bool> DeleteAsync(Guid id);
+        Director Add(Director director);
+        Director? GetById(Guid id);
+        Director? GetByField(string fieldName, object value);
+        bool UpdateByField(Guid id, string fieldName, object value);
+        bool Delete(Guid id);
+        List<Director> GetAll();
     }
 }

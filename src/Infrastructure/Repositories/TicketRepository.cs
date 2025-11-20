@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Theater_Management_BE.src.Domain.Entities;
 using Theater_Management_BE.src.Domain.Repositories;
 using Theater_Management_BE.src.Infrastructure.Data;
@@ -14,12 +16,12 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task InsertAsync(Ticket ticket)
+        public void Insert(Ticket ticket)
         {
             try
             {
-                await _context.Tickets.AddAsync(ticket);
-                await _context.SaveChangesAsync();
+                _context.Tickets.Add(ticket);
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -27,7 +29,7 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
             }
         }
 
-        public async Task<Ticket?> GetByFieldAsync(string fieldName, object fieldValue)
+        public Ticket? GetByField(string fieldName, object fieldValue)
         {
             try
             {
@@ -35,8 +37,9 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
                 if (property == null)
                     throw new Exception($"Invalid field name: {fieldName}");
 
-                return await _context.Tickets
-                    .FirstOrDefaultAsync(t => EF.Property<object>(t, fieldName).Equals(fieldValue));
+                return _context.Tickets
+                    .AsEnumerable()
+                    .FirstOrDefault(t => property.GetValue(t)?.Equals(fieldValue) ?? false);
             }
             catch (Exception ex)
             {
@@ -44,11 +47,11 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
             }
         }
 
-        public async Task UpdateByFieldAsync(Guid id, string fieldName, object fieldValue)
+        public void UpdateByField(Guid id, string fieldName, object fieldValue)
         {
             try
             {
-                var ticket = await _context.Tickets.FindAsync(id);
+                var ticket = _context.Tickets.Find(id);
                 if (ticket == null)
                     throw new Exception($"Ticket with ID {id} not found");
 
@@ -58,7 +61,7 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
 
                 property.SetValue(ticket, fieldValue);
                 _context.Tickets.Update(ticket);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -66,16 +69,16 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
             }
         }
 
-        public async Task DeleteAsync(Guid id)
+        public void Delete(Guid id)
         {
             try
             {
-                var ticket = await _context.Tickets.FindAsync(id);
+                var ticket = _context.Tickets.Find(id);
                 if (ticket == null)
                     throw new Exception($"Ticket with ID {id} not found");
 
                 _context.Tickets.Remove(ticket);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {

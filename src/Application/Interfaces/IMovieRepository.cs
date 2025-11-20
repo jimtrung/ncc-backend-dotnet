@@ -4,11 +4,11 @@ namespace Theater_Management_BE.src.Application.Interfaces
 {
     public interface IMovieRepository
     {
-        Task<Movie> AddAsync(Movie movie);
-        Task<Movie?> GetByIdAsync(Guid id);
-        Task<IEnumerable<Movie>> GetAllAsync();
-        Task<Movie?> UpdateAsync(Movie movie);
-        Task<bool> DeleteAsync(Guid id);
-        Task<bool> DeleteAllAsync();
+        Movie Add(Movie movie);
+        Movie? GetById(Guid id);
+        IEnumerable<Movie> GetAll();
+        Movie? Update(Movie movie);
+        bool Delete(Guid id);
+        bool DeleteAll();
     }
 }

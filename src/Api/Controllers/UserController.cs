@@ -1,5 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Theater_Management_BE.src.Application.Services;
 using Theater_Management_BE.src.Domain.Entities;
@@ -19,7 +18,7 @@ namespace Theater_Management_BE.src.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<User>> GetUser()
+        public ActionResult<User> GetUser()
         {
             var user = HttpContext.User;
 
@@ -28,7 +27,8 @@ namespace Theater_Management_BE.src.Api.Controllers
 
             var userId = HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-            User userInfo = await _userService.GetUserAsync(Guid.Parse(userId));
+            // Chuyển async sang sync bằng .Result
+            User userInfo = _userService.GetUser(Guid.Parse(userId));
 
             return Ok(userInfo);
         }

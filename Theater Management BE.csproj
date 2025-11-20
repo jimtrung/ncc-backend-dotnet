@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="src\Application\Services\" />
     <Folder Include="src\Infrastructure\Data\" />
   </ItemGroup>
 

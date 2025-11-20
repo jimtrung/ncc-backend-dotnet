@@ -7,12 +7,21 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Theater_Management_BE.src.Infrastructure.Utils;
 using System.IdentityModel.Tokens.Jwt;
+using Theater_Management_BE.src.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Connect to database
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        npgsqlOptions =>
+        {
+            npgsqlOptions.MapEnum<Provider>("provider_type");
+            npgsqlOptions.MapEnum<UserRole>("role_type");
+        });
+});
 
 // Add authentication
 builder.Services.AddAuthentication(options =>
@@ -47,7 +56,7 @@ builder.Services.AddScoped<AuthTokenUtil>(sp =>
     var config = sp.GetRequiredService<IConfiguration>();
     return new AuthTokenUtil(config);
 });
-builder.Services.AddScoped<Theater_Management_BE.src.Infrastructure.Utils.EmailValidator>();
+builder.Services.AddScoped<EmailValidator>();
 builder.Services.AddScoped<Theater_Management_BE.src.Application.Interfaces.IUserRepository, Theater_Management_BE.src.Infrastructure.Repositories.UserRepository>();
 builder.Services.AddScoped<Theater_Management_BE.src.Application.Services.UserService>();
 

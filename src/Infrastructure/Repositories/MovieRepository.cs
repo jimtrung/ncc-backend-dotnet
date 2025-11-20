@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Theater_Management_BE.src.Application.Interfaces;
+﻿using Theater_Management_BE.src.Application.Interfaces;
 using Theater_Management_BE.src.Domain.Entities;
 using Theater_Management_BE.src.Infrastructure.Data;
 
@@ -14,53 +13,50 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Movie> AddAsync(Movie movie)
+        public Movie Add(Movie movie)
         {
             _context.Movies.Add(movie);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return movie;
         }
 
-        public async Task<Movie?> GetByIdAsync(Guid id)
+        public Movie? GetById(Guid id)
         {
-            return await _context.Movies.FirstOrDefaultAsync(m => m.Id == id);
+            return _context.Movies.FirstOrDefault(m => m.Id == id);
         }
 
-        public async Task<IEnumerable<Movie>> GetAllAsync()
+        public IEnumerable<Movie> GetAll()
         {
-            return await _context.Movies.ToListAsync();
+            return _context.Movies.ToList();
         }
 
-        public async Task<Movie?> UpdateAsync(Movie movie)
+        public Movie? Update(Movie movie)
         {
-            var existing = await _context.Movies.FindAsync(movie.Id);
-            if (existing == null)
-                return null;
+            var existing = _context.Movies.Find(movie.Id);
+            if (existing == null) return null;
 
             _context.Entry(existing).CurrentValues.SetValues(movie);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return existing;
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public bool Delete(Guid id)
         {
-            var movie = await _context.Movies.FindAsync(id);
-            if (movie == null)
-                return false;
+            var movie = _context.Movies.Find(id);
+            if (movie == null) return false;
 
             _context.Movies.Remove(movie);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return true;
         }
 
-        public async Task<bool> DeleteAllAsync()
+        public bool DeleteAll()
         {
-            var allMovies = await _context.Movies.ToListAsync();
-            if (!allMovies.Any())
-                return false;
+            var allMovies = _context.Movies.ToList();
+            if (!allMovies.Any()) return false;
 
             _context.Movies.RemoveRange(allMovies);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return true;
         }
     }

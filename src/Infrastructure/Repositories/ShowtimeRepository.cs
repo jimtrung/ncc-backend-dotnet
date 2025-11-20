@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Theater_Management_BE.src.Domain.Entities;
+﻿using Theater_Management_BE.src.Domain.Entities;
 using Theater_Management_BE.src.Domain.Repositories;
 using Theater_Management_BE.src.Infrastructure.Data;
 
@@ -14,12 +13,12 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task InsertAsync(Showtime showtime)
+        public void Insert(Showtime showtime)
         {
             try
             {
-                await _context.Showtimes.AddAsync(showtime);
-                await _context.SaveChangesAsync();
+                _context.Showtimes.Add(showtime);
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -27,17 +26,17 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
             }
         }
 
-        public async Task<Showtime?> GetByFieldAsync(string fieldName, object fieldValue)
+        public Showtime? GetByField(string fieldName, object fieldValue)
         {
             try
             {
-                // 🧠 Dùng reflection cho linh hoạt như Java
-                var query = _context.Showtimes.AsQueryable();
-                var parameter = typeof(Showtime).GetProperty(fieldName);
-                if (parameter == null)
+                var property = typeof(Showtime).GetProperty(fieldName);
+                if (property == null)
                     throw new Exception($"Invalid field name: {fieldName}");
 
-                return await query.FirstOrDefaultAsync(s => EF.Property<object>(s, fieldName).Equals(fieldValue));
+                return _context.Showtimes
+                    .AsEnumerable()
+                    .FirstOrDefault(s => property.GetValue(s)?.Equals(fieldValue) ?? false);
             }
             catch (Exception ex)
             {
@@ -45,11 +44,11 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
             }
         }
 
-        public async Task UpdateByFieldAsync(Guid id, string fieldName, object fieldValue)
+        public void UpdateByField(Guid id, string fieldName, object fieldValue)
         {
             try
             {
-                var showtime = await _context.Showtimes.FindAsync(id);
+                var showtime = _context.Showtimes.Find(id);
                 if (showtime == null)
                     throw new Exception($"Showtime with ID {id} not found");
 
@@ -59,7 +58,7 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
 
                 property.SetValue(showtime, fieldValue);
                 _context.Showtimes.Update(showtime);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -67,16 +66,16 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
             }
         }
 
-        public async Task DeleteAsync(Guid id)
+        public void Delete(Guid id)
         {
             try
             {
-                var showtime = await _context.Showtimes.FindAsync(id);
+                var showtime = _context.Showtimes.Find(id);
                 if (showtime == null)
                     throw new Exception($"Showtime with ID {id} not found");
 
                 _context.Showtimes.Remove(showtime);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {

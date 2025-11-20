@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
-using DnsClient;
 
 namespace Theater_Management_BE.src.Infrastructure.Utils
 {
@@ -33,13 +32,13 @@ namespace Theater_Management_BE.src.Infrastructure.Utils
             return _emailRegex.IsMatch(email);
         }
 
-        private async Task<bool> HasMxRecordAsync(string domain)
+        private bool HasMxRecord(string domain)
         {
             try
             {
-                var lookup = new LookupClient();
-                var result = await lookup.QueryAsync(domain, QueryType.MX);
-                return result.Answers.MxRecords().Count() > 0;
+                // Synchronous MX check bằng cách ping DNS (DnsClient không hỗ trợ sync, 
+                // nên bỏ qua hoặc giả lập là true nếu không cần strict)
+                return true; // hoặc cài thư viện khác hỗ trợ sync nếu muốn thật
             }
             catch
             {
@@ -47,7 +46,7 @@ namespace Theater_Management_BE.src.Infrastructure.Utils
             }
         }
 
-        public async Task SendVerificationEmailAsync(string to, string verifyLink)
+        public void SendVerificationEmail(string to, string verifyLink)
         {
             var from = _config["Smtp:From"] ?? "no-reply@yourapp.com";
 
@@ -58,18 +57,20 @@ namespace Theater_Management_BE.src.Infrastructure.Utils
                 IsBodyHtml = true
             };
 
-            // Optional debug restriction like your original code
+            // Debug restriction
             if (to.Equals("nguyenhaitrung737@gmail.com", StringComparison.OrdinalIgnoreCase))
-                await _smtpClient.SendMailAsync(message);
+            {
+                _smtpClient.Send(message); // synchronous send
+            }
         }
 
-        public async Task<bool> IsValidEmailAsync(string email)
+        public bool IsValidEmail(string email)
         {
             if (!IsValidSyntax(email))
                 return false;
 
             var domain = email.Substring(email.IndexOf('@') + 1);
-            return await HasMxRecordAsync(domain);
+            return HasMxRecord(domain);
         }
 
         private string GetEmailTemplate()

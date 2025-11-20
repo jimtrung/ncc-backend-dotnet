@@ -29,13 +29,13 @@ namespace Theater_Management_BE.src.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .Property(u => u.Provider)
-                .HasConversion<string>();
+            modelBuilder.HasPostgresEnum<Provider>("provider_type");
+            modelBuilder.HasPostgresEnum<UserRole>("role_type");
 
-            modelBuilder.Entity<User>()
-                .Property(u => u.Role)
-                .HasConversion<string>();
+            modelBuilder.Entity<MovieActor>()
+                .HasKey(ma => new { ma.MovieId, ma.ActorId });
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

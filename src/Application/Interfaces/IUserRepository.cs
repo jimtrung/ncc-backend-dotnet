@@ -4,13 +4,13 @@ namespace Theater_Management_BE.src.Application.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User> AddAsync(User user);
-        Task<User?> GetByIdAsync(Guid value);
-        Task<User?> GetByUsernameAsync(string value);
-        Task<User?> GetByEmailAsync(string value);
-        Task<User?> GetByPhoneNumberAsync(string value);
-        Task<User?> UpdateAsync(User user);
-        Task<bool> DeleteAsync(Guid userId);
-        Task<User?> GetByUsernameOrEmailOrPhoneNumber(string username, string email, string phoneNumber);
+        User Add(User user);
+        User? GetById(Guid value);
+        User? GetByUsername(string value);
+        User? GetByEmail(string value);
+        User? GetByPhoneNumber(string value);
+        User? Update(User user);
+        bool Delete(Guid userId);
+        User? GetByUsernameOrEmailOrPhoneNumber(string username, string email, string phoneNumber);
     }
 }

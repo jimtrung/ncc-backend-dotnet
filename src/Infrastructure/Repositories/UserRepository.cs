@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Theater_Management_BE.src.Application.Interfaces;
+﻿using Theater_Management_BE.src.Application.Interfaces;
 using Theater_Management_BE.src.Domain.Entities;
 using Theater_Management_BE.src.Infrastructure.Data;
 
@@ -14,58 +13,58 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<User> AddAsync(User user)
+        public User Add(User user)
         {
             _context.Add(user);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return user;
         }
 
-        public async Task<User?> GetByIdAsync(Guid value)
+        public User? GetById(Guid value)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Id == value);
+            return _context.Users.FirstOrDefault(u => u.Id == value);
         }
 
-        public async Task<User?> GetByUsernameAsync(string value)
+        public User? GetByUsername(string value)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Username == value);
+            return _context.Users.FirstOrDefault(u => u.Username == value);
         }
 
-        public async Task<User?> GetByEmailAsync(string value)
+        public User? GetByEmail(string value)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == value);
+            return _context.Users.FirstOrDefault(u => u.Email == value);
         }
 
-        public async Task<User?> GetByPhoneNumberAsync(string value)
+        public User? GetByPhoneNumber(string value)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == value);
+            return _context.Users.FirstOrDefault(u => u.PhoneNumber == value);
         }
 
-        public async Task<User?> UpdateAsync(User user)
+        public User? Update(User user)
         {
-            var existingUser = await _context.Users.FindAsync(user.Id);
+            var existingUser = _context.Users.Find(user.Id);
             if (existingUser == null)
                 return null;
 
             _context.Entry(existingUser).CurrentValues.SetValues(user);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return existingUser;
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public bool Delete(Guid id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = _context.Users.Find(id);
             if (user == null)
                 return false;
 
             _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return true;
         }
 
-        public async Task<User?> GetByUsernameOrEmailOrPhoneNumber(string username, string email, string phoneNumber)
+        public User? GetByUsernameOrEmailOrPhoneNumber(string username, string email, string phoneNumber)
         {
-            return await _context.Users.FirstOrDefaultAsync(u =>
+            return _context.Users.FirstOrDefault(u =>
                 (u.Username == username) || (u.Email == email) || (u.PhoneNumber == phoneNumber)
             );
         }

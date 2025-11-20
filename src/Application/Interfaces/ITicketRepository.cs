@@ -4,9 +4,9 @@ namespace Theater_Management_BE.src.Domain.Repositories
 {
     public interface ITicketRepository
     {
-        Task InsertAsync(Ticket ticket);
-        Task<Ticket?> GetByFieldAsync(string fieldName, object fieldValue);
-        Task UpdateByFieldAsync(Guid id, string fieldName, object fieldValue);
-        Task DeleteAsync(Guid id);
+        void Insert(Ticket ticket);
+        Ticket? GetByField(string fieldName, object fieldValue);
+        void UpdateByField(Guid id, string fieldName, object fieldValue);
+        void Delete(Guid id);
     }
 }

@@ -4,10 +4,11 @@ namespace Theater_Management_BE.src.Application.Interfaces
 {
     public interface IActorRepository
     {
-        Task<Actor> AddAsync(Actor actor);
-        Task<Actor?> GetByIdAsync(Guid id);
-        Task<Actor?> GetByFieldAsync(string fieldName, object value);
-        Task<bool> UpdateFieldAsync(Guid id, string fieldName, object value);
-        Task<bool> DeleteAsync(Guid id);
+        Actor Add(Actor actor);
+        Actor? GetById(Guid id);
+        Actor? GetByField(string fieldName, object value);
+        List<Actor> GetAll();
+        bool UpdateField(Guid id, string fieldName, object value);
+        bool Delete(Guid id);
     }
 }

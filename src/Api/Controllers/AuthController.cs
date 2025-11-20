@@ -17,19 +17,21 @@ namespace Theater_Management_BE.src.Api.Controllers
         }
 
         [HttpPost("signup")]
-        public async Task<ActionResult<User>> SignUp([FromBody] SignUpRequest request)
+        public ActionResult<User> SignUp([FromBody] SignUpRequest request)
         {
-            return Ok(await _userService.SignUp(request));
+            var user = _userService.SignUp(request);
+            return Ok(user);
         }
 
         [HttpPost("signin")]
-        public async Task<ActionResult<TokenPair>> SignIn([FromBody] SignInRequest request)
+        public ActionResult<TokenPair> SignIn([FromBody] SignInRequest request)
         {
-            return Ok(await _userService.SignIn(request));
+            var tokenPair = _userService.SignIn(request);
+            return Ok(tokenPair);
         }
 
         [HttpPost("refresh")]
-        public async Task<ActionResult<string>> Refresh([FromBody] RefreshRequest request)
+        public ActionResult<string> Refresh([FromBody] RefreshRequest request)
         {
             string newAccessToken = _userService.Refresh(request.RefreshToken);
             if (newAccessToken == null) return Unauthorized("Expired refresh token");

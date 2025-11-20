@@ -4,12 +4,12 @@ namespace Theater_Management_BE.src.Application.Interfaces
 {
     public interface IAuditoriumRepository
     {
-        Task<Auditorium> AddAsync(Auditorium auditorium);
-        Task<List<Auditorium>> GetAllAsync();
-        Task<Auditorium?> GetByIdAsync(Guid id);
-        Task<bool> UpdateFieldAsync(Guid id, string fieldName, object value);
-        Task<bool> UpdateByIdAsync(Guid id, Auditorium auditorium);
-        Task<bool> DeleteAsync(Guid id);
-        Task<bool> DeleteAllAsync();
+        Auditorium Add(Auditorium auditorium);
+        List<Auditorium> GetAll();
+        Auditorium? GetById(Guid id);
+        bool UpdateField(Guid id, string fieldName, object value);
+        bool UpdateById(Guid id, Auditorium auditorium);
+        bool Delete(Guid id);
+        bool DeleteAll();
     }
 }

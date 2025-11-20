@@ -20,7 +20,7 @@ namespace Theater_Management_BE.src.Application.Services
             _emailValidator = emailValidator;
         }
 
-        public async Task<User> SignUp(SignUpRequest request)
+        public User SignUp(SignUpRequest request)
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -32,20 +32,20 @@ namespace Theater_Management_BE.src.Application.Services
             if (request.Email == null) throw new InvalidUserDataException("Email is empty");
             if (request.PhoneNumber == null) throw new InvalidUserDataException("Phone Number is empty");
             if (request.Password == null) throw new InvalidUserDataException("Password is empty");
-            if (!await _emailValidator.IsValidEmailAsync(request.Email))
+            if (!_emailValidator.IsValidEmail(request.Email))
                 throw new InvalidUserDataException("Invalid email");
             Console.WriteLine($"[DEBUG] Step 1 done in {stopwatch.ElapsedMilliseconds - t1} ms");
 
             // Step 2: Check existing user
             var t2 = stopwatch.ElapsedMilliseconds;
-            var existingUser = await _repo.GetByUsernameOrEmailOrPhoneNumber(request.Username, request.Email, request.PhoneNumber);
+            var existingUser = _repo.GetByUsernameOrEmailOrPhoneNumber(request.Username, request.Email, request.PhoneNumber);
             if (existingUser != null) throw new UserAlreadyExistsException("username/email/phone number already exists");
             Console.WriteLine($"[DEBUG] Step 2 done in {stopwatch.ElapsedMilliseconds - t2} ms");
 
             // Step 3: Generate token, otp, hash password
             var t3 = stopwatch.ElapsedMilliseconds;
             string token = TokenUtil.GenerateToken();
-            int otp = OtpUtil.GenerateOtp();
+            string otp = OtpUtil.GenerateOtp();
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
             Console.WriteLine($"[DEBUG] Step 3 done in {stopwatch.ElapsedMilliseconds - t3} ms");
 
@@ -67,23 +67,20 @@ namespace Theater_Management_BE.src.Application.Services
             };
             Console.WriteLine($"[DEBUG] Step 4 done in {stopwatch.ElapsedMilliseconds - t4} ms");
 
-            // Step 5: Send verification email
-            var emailTask = Task.Run(() =>
-              {
-                  try
-                  {
-                      _ = _emailValidator.SendVerificationEmailAsync(user.Email, "http://localhost:8080/verify/" + token);
-                      Console.WriteLine("[DEBUG] Email send task started");
-                  }
-                  catch (Exception ex)
-                  {
-                      Console.WriteLine("[DEBUG] Email send failed: " + ex.Message);
-                  }
-              });
+            // Step 5: Send verification email (fire-and-forget)
+            try
+            {
+                _emailValidator.SendVerificationEmail(user.Email, "http://localhost:8080/verify/" + token);
+                Console.WriteLine("[DEBUG] Email send task started");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("[DEBUG] Email send failed: " + ex.Message);
+            }
 
             // Step 6: Save to DB
             var t6 = stopwatch.ElapsedMilliseconds;
-            var savedUser = await _repo.AddAsync(user);
+            var savedUser = _repo.Add(user);
             Console.WriteLine($"[DEBUG] Step 6 done in {stopwatch.ElapsedMilliseconds - t6} ms");
 
             stopwatch.Stop();
@@ -92,7 +89,7 @@ namespace Theater_Management_BE.src.Application.Services
             return savedUser;
         }
 
-        public async Task<TokenPair> SignIn(SignInRequest request)
+        public TokenPair SignIn(SignInRequest request)
         {
             var stopwatch = Stopwatch.StartNew();
             Console.WriteLine("[DEBUG] SignIn started at " + DateTime.UtcNow);
@@ -107,28 +104,22 @@ namespace Theater_Management_BE.src.Application.Services
 
             // Step 2: Check existing user
             var t2 = stopwatch.ElapsedMilliseconds;
-            var user = await _repo.GetByUsernameAsync(request.Username)
+            var user = _repo.GetByUsername(request.Username)
                        ?? throw new UserNotFoundException("User does not exist");
             Console.WriteLine($"[DEBUG] Step 2 done in {stopwatch.ElapsedMilliseconds - t2} ms");
 
-            // Step 3: Check user password (use BCrypt Verify, not ReferenceEquals)
+            // Step 3: Check password
             var t3 = stopwatch.ElapsedMilliseconds;
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
                 throw new InvalidCredentialsException("Wrong password");
             Console.WriteLine($"[DEBUG] Step 3 done in {stopwatch.ElapsedMilliseconds - t3} ms");
 
-            // Step 4: Generate tokens (can be done in parallel)
+            // Step 4: Generate tokens
             var t4 = stopwatch.ElapsedMilliseconds;
-            var refreshTask = Task.Run(() => _authTokenUtil.GenerateRefreshToken(user.Id));
-            var accessTask = Task.Run(() => _authTokenUtil.GenerateAccessToken(user.Id));
+            string refreshToken = _authTokenUtil.GenerateRefreshToken(user.Id);
+            string accessToken = _authTokenUtil.GenerateAccessToken(user.Id);
 
-            await Task.WhenAll(refreshTask, accessTask);
-
-            var tokenPair = new TokenPair
-            {
-                RefreshToken = refreshTask.Result,
-                AccessToken = accessTask.Result
-            };
+            var tokenPair = new TokenPair(refreshToken, accessToken);
             Console.WriteLine($"[DEBUG] Step 4 done in {stopwatch.ElapsedMilliseconds - t4} ms");
 
             stopwatch.Stop();
@@ -137,7 +128,7 @@ namespace Theater_Management_BE.src.Application.Services
             return tokenPair;
         }
 
-        public string? Refresh(String refreshToken)
+        public string? Refresh(string refreshToken)
         {
             if (_authTokenUtil.IsTokenExpired(refreshToken)) return null;
 
@@ -145,10 +136,10 @@ namespace Theater_Management_BE.src.Application.Services
             return _authTokenUtil.GenerateAccessToken(userId);
         }
 
-        public async Task<User?> GetUserAsync(Guid id)
+        public User? GetUser(Guid id)
         {
-            if (id == null) throw new InvalidUserDataException("ID is empty");
-            return await _repo.GetByIdAsync(id);
+            if (id == Guid.Empty) throw new InvalidUserDataException("ID is empty");
+            return _repo.GetById(id);
         }
     }
 }
