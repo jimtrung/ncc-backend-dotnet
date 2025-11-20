@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Theater_Management_BE.src.Domain.Entities;
+using Theater_Management_BE.src.Domain.Enums;
 
 namespace Theater_Management_BE.src.Infrastructure.Data
 {
@@ -29,8 +30,25 @@ namespace Theater_Management_BE.src.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Register PostgreSQL enum types
             modelBuilder.HasPostgresEnum<Provider>("provider_type");
             modelBuilder.HasPostgresEnum<UserRole>("role_type");
+            modelBuilder.HasPostgresEnum<MovieGenre>("movie_genre");
+
+            // Configure User enum properties
+            // Npgsql will handle conversion via MapEnum in Program.cs
+            modelBuilder.Entity<User>()
+                .Property(u => u.Role)
+                .HasColumnType("role_type");
+
+            modelBuilder.Entity<User>()
+                .Property(u => u.Provider)
+                .HasColumnType("provider_type");
+
+            // Configure Movie enum properties (array of enums)
+            modelBuilder.Entity<Movie>()
+                .Property(m => m.Genres)
+                .HasColumnType("movie_genre[]");
 
             modelBuilder.Entity<MovieActor>()
                 .HasKey(ma => new { ma.MovieId, ma.ActorId });

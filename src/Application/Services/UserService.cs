@@ -59,8 +59,8 @@ namespace Theater_Management_BE.src.Application.Services
                 Password = passwordHash,
                 Token = token,
                 OTP = otp,
-                Role = UserRole.USER,
-                Provider = Provider.LOCAL,
+                Role = UserRole.user,
+                Provider = Provider.local,
                 Verified = false,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow

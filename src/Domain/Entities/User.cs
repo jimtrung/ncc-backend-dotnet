@@ -28,10 +28,10 @@ namespace Theater_Management_BE.src.Domain.Entities
         public Provider Provider { get; set; }
 
         [Column("token")]
-        public string Token { get; set; }
+        public string? Token { get; set; }
 
         [Column("otp")]
-        public string OTP { get; set; }
+        public string? OTP { get; set; }
 
         [Column("verified")]
         public bool Verified { get; set; }

@@ -21,7 +21,7 @@ namespace Theater_Management_BE.src.Domain.Entities
         public int? Age { get; set; }
 
         [Column("gender")]
-        public Gender Gender { get; set; }
+        public string Gender { get; set; }
 
         [Column("country_code")]
         public string CountryCode { get; set; }

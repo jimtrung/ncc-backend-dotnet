@@ -8,6 +8,11 @@ using System.Text;
 using Theater_Management_BE.src.Infrastructure.Utils;
 using System.IdentityModel.Tokens.Jwt;
 using Theater_Management_BE.src.Domain.Entities;
+using Theater_Management_BE.src.Application.Interfaces;
+using Theater_Management_BE.src.Infrastructure.Repositories;
+using Theater_Management_BE.src.Application.Services;
+using Theater_Management_BE.src.Domain.Repositories;
+using Theater_Management_BE.src.Domain.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +25,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         {
             npgsqlOptions.MapEnum<Provider>("provider_type");
             npgsqlOptions.MapEnum<UserRole>("role_type");
+            // Gender is stored as string in entities; no enum mapping needed
+            npgsqlOptions.MapEnum<MovieGenre>("movie_genre");
         });
 });
 
@@ -57,8 +64,23 @@ builder.Services.AddScoped<AuthTokenUtil>(sp =>
     return new AuthTokenUtil(config);
 });
 builder.Services.AddScoped<EmailValidator>();
-builder.Services.AddScoped<Theater_Management_BE.src.Application.Interfaces.IUserRepository, Theater_Management_BE.src.Infrastructure.Repositories.UserRepository>();
-builder.Services.AddScoped<Theater_Management_BE.src.Application.Services.UserService>();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IActorRepository, ActorRepository>();
+builder.Services.AddScoped<IAuditoriumRepository, AuditoriumRepository>();
+builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<IDirectorRepository, DirectorRepository>();
+builder.Services.AddScoped<IMovieActorRepository, MovieActorRepository>();
+builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+builder.Services.AddScoped<ISeatRepository, SeatRepository>();
+builder.Services.AddScoped<IShowtimeRepository, ShowtimeRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<DirectorService>();
+builder.Services.AddScoped<ActorService>();
+builder.Services.AddScoped<MovieActorService>();
+
 
 // Learn more about configuring Sagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
