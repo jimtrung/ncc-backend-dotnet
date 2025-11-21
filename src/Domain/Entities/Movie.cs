@@ -18,9 +18,6 @@ namespace Theater_Management_BE.src.Domain.Entities
         [Column("director_id")]
         public Guid? DirectorId { get; set; }
 
-        [ForeignKey("DirectorId")]
-        public Director Director { get; set; }
-
         [Column("genres")]
         public List<MovieGenre> Genres { get; set; }
 
