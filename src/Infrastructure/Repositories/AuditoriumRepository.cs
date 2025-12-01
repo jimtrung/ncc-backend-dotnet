@@ -51,7 +51,18 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
             var existing = _context.Auditoriums.Find(id);
             if (existing == null) return false;
 
-            existing.Capacity = auditorium.Capacity;
+            // Chỉ update nếu client gửi giá trị
+            if (!string.IsNullOrWhiteSpace(auditorium.Name))
+                existing.Name = auditorium.Name;
+
+            if (!string.IsNullOrWhiteSpace(auditorium.Type))
+                existing.Type = auditorium.Type;
+
+            if (!string.IsNullOrWhiteSpace(auditorium.Note))
+                existing.Note = auditorium.Note;
+
+            if (auditorium.Capacity > 0)
+                existing.Capacity = auditorium.Capacity;
             existing.UpdatedAt = DateTime.UtcNow;
 
             _context.Auditoriums.Update(existing);

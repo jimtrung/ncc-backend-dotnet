@@ -22,5 +22,15 @@ namespace Theater_Management_BE.src.Api.Controllers
             var directors = _directorService.GetAllDirectors();
             return Ok(directors);
         }
+
+        [HttpGet("{id}")]
+        public ActionResult<Director?> GetDirectorById(Guid id)
+        {
+            var director = _directorService.GetDirectorById(id);
+            if (director == null)
+                return NotFound();
+            return Ok(director);
+        }
+
     }
 }

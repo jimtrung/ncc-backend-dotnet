@@ -21,6 +21,7 @@ namespace Theater_Management_BE.src.Api.Controllers
             var auditoriums = _auditoriumRepository.GetAll();
             if (auditoriums == null || !auditoriums.Any())
                 return NoContent();
+            Console.WriteLine(auditoriums);
             return Ok(auditoriums);
         }
 
