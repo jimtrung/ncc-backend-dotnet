@@ -16,11 +16,20 @@ using Theater_Management_BE.src.Domain.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Connect to database
+// Connect to database with connection pooling
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionStringBuilder = new Npgsql.NpgsqlConnectionStringBuilder(connectionString)
+{
+    MinPoolSize = 2,  // Pre-allocate 2 connections
+    MaxPoolSize = 20, // Allow up to 20 concurrent connections
+    ConnectionIdleLifetime = 300, // Close idle connections after 5 minutes
+    ConnectionPruningInterval = 10 // Check for idle connections every 10 seconds
+};
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
+        connectionStringBuilder.ConnectionString,
         npgsqlOptions =>
         {
             npgsqlOptions.MapEnum<Provider>("provider_type");
@@ -89,6 +98,22 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddAuthorization();
 var app = builder.Build();
+
+// Pre-warm database connection pool
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    try
+    {
+        // Execute a simple query to initialize the connection pool
+        await dbContext.Database.CanConnectAsync();
+        Console.WriteLine("Database connection pool initialized successfully.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Warning: Failed to pre-warm database connection: {ex.Message}");
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
