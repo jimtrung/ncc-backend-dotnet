@@ -27,7 +27,6 @@ namespace Theater_Management_BE.src.Api.Controllers
         public ActionResult<TokenPair> SignIn([FromBody] SignInRequest request)
         {
             var tokenPair = _userService.SignIn(request);
-            Console.WriteLine(tokenPair.ToString());
             return Ok(tokenPair);
         }
 

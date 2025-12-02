@@ -57,11 +57,7 @@ namespace Theater_Management_BE.src.Infrastructure.Utils
                 IsBodyHtml = true
             };
 
-            // Debug restriction
-            if (to.Equals("nguyenhaitrung737@gmail.com", StringComparison.OrdinalIgnoreCase))
-            {
-                _smtpClient.Send(message); // synchronous send
-            }
+            _smtpClient.Send(message); // synchronous send 
         }
 
         public bool IsValidEmail(string email)

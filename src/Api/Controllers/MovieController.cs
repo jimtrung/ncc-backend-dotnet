@@ -21,7 +21,6 @@ namespace Theater_Management_BE.src.Api.Controllers
             var movies = _movieRepository.GetAll();
             if (movies == null || !movies.Any())
                 return NoContent();
-            Console.WriteLine("Test");
             return Ok(movies);
         }
 

@@ -105,8 +105,8 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     try
     {
-        // Execute a simple query to initialize the connection pool
-        await dbContext.Database.CanConnectAsync();
+        // Execute a simple query to initialize the connection pool and warm up EF Core model
+        await dbContext.Movies.AnyAsync();
         Console.WriteLine("Database connection pool initialized successfully.");
     }
     catch (Exception ex)
