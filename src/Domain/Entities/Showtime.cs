@@ -11,14 +11,8 @@ namespace Theater_Management_BE.src.Domain.Entities
         [Column("movie_id")]
         public Guid MovieId { get; set; }
 
-        [ForeignKey("MovieId")]
-        public Movie Movie { get; set; }
-
         [Column("auditorium_id")]
         public Guid AuditoriumId { get; set; }
-
-        [ForeignKey("AuditoriumId")]
-        public Auditorium Auditorium { get; set; }
 
         [Column("start_time")]
         public DateTime StartTime { get; set; }
@@ -31,5 +25,9 @@ namespace Theater_Management_BE.src.Domain.Entities
 
         [Column("updated_at")]
         public DateTime UpdatedAt { get; set; }
+
+        [Column("show_date")]
+        public DateTime? ShowDate { get; set; }
+
     }
 }

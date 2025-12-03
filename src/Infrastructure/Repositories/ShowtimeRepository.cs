@@ -1,5 +1,6 @@
-﻿using Theater_Management_BE.src.Domain.Entities;
-using Theater_Management_BE.src.Domain.Repositories;
+﻿using System.Reflection;
+using Theater_Management_BE.src.Application.Interfaces;
+using Theater_Management_BE.src.Domain.Entities;
 using Theater_Management_BE.src.Infrastructure.Data;
 
 namespace Theater_Management_BE.src.Infrastructure.Repositories
@@ -13,74 +14,66 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
             _context = context;
         }
 
-        public void Insert(Showtime showtime)
+        public Showtime Add(Showtime showtime)
         {
-            try
-            {
-                _context.Showtimes.Add(showtime);
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to insert new showtime", ex);
-            }
+            _context.Showtimes.Add(showtime);
+            _context.SaveChanges();
+            return showtime;
         }
 
-        public Showtime? GetByField(string fieldName, object fieldValue)
+        public List<Showtime> GetAll()
         {
-            try
-            {
-                var property = typeof(Showtime).GetProperty(fieldName);
-                if (property == null)
-                    throw new Exception($"Invalid field name: {fieldName}");
-
-                return _context.Showtimes
-                    .AsEnumerable()
-                    .FirstOrDefault(s => property.GetValue(s)?.Equals(fieldValue) ?? false);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to get showtime", ex);
-            }
+            return _context.Showtimes.ToList();
         }
 
-        public void UpdateByField(Guid id, string fieldName, object fieldValue)
+        public Showtime? GetById(Guid id)
         {
-            try
-            {
-                var showtime = _context.Showtimes.Find(id);
-                if (showtime == null)
-                    throw new Exception($"Showtime with ID {id} not found");
-
-                var property = typeof(Showtime).GetProperty(fieldName);
-                if (property == null)
-                    throw new Exception($"Invalid field name: {fieldName}");
-
-                property.SetValue(showtime, fieldValue);
-                _context.Showtimes.Update(showtime);
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to update showtime", ex);
-            }
+            return _context.Showtimes.FirstOrDefault(s => s.Id == id);
         }
 
-        public void Delete(Guid id)
+        public Showtime? GetByField(string fieldName, object value)
         {
-            try
-            {
-                var showtime = _context.Showtimes.Find(id);
-                if (showtime == null)
-                    throw new Exception($"Showtime with ID {id} not found");
+            var prop = typeof(Showtime).GetProperty(fieldName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            if (prop == null)
+                throw new ArgumentException($"Field '{fieldName}' does not exist on Showtime entity.");
 
-                _context.Showtimes.Remove(showtime);
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to delete showtime", ex);
-            }
+            return _context.Showtimes
+                .AsEnumerable()
+                .FirstOrDefault(s => prop.GetValue(s)?.Equals(value) ?? false);
+        }
+
+        public bool UpdateByField(Guid id, string fieldName, object value)
+        {
+            var showtime = _context.Showtimes.Find(id);
+            if (showtime == null) return false;
+
+            var prop = typeof(Showtime).GetProperty(fieldName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            if (prop == null)
+                throw new ArgumentException($"Field '{fieldName}' does not exist on Showtime entity.");
+
+            prop.SetValue(showtime, value);
+            _context.Showtimes.Update(showtime);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool Delete(Guid id)
+        {
+            var showtime = _context.Showtimes.Find(id);
+            if (showtime == null) return false;
+
+            _context.Showtimes.Remove(showtime);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public void DeleteAll()
+        {
+            var all = _context.Showtimes.ToList();
+            if (!all.Any()) return;
+
+            _context.Showtimes.RemoveRange(all);
+            _context.SaveChanges();
         }
     }
 }
