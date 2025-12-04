@@ -89,7 +89,7 @@ namespace Theater_Management_BE.src.Application.Services
 
             // Step 4: Generate tokens
             string refreshToken = _authTokenUtil.GenerateRefreshToken(user.Id);
-            string accessToken = _authTokenUtil.GenerateAccessToken(user.Id);
+            string accessToken = _authTokenUtil.GenerateAccessToken(user.Id, user.Role);
 
             return new TokenPair(accessToken, refreshToken);
         }
@@ -99,7 +99,10 @@ namespace Theater_Management_BE.src.Application.Services
             if (_authTokenUtil.IsTokenExpired(refreshToken)) return null;
 
             Guid userId = _authTokenUtil.ParseToken(refreshToken);
-            return _authTokenUtil.GenerateAccessToken(userId);
+            var user = _repo.GetById(userId);
+            if (user == null) return null;
+
+            return _authTokenUtil.GenerateAccessToken(userId, user.Role);
         }
 
         public User? GetUser(Guid id)

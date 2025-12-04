@@ -17,6 +17,7 @@ namespace Theater_Management_BE.src.Api.Controllers
         }
 
         [HttpPost]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
         public ActionResult AddMovieActors([FromBody] MovieActorsRequest request)
         {
             foreach (var actorId in request.ActorsId)
