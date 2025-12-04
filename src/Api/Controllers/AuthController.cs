@@ -37,5 +37,16 @@ namespace Theater_Management_BE.src.Api.Controllers
             if (newAccessToken == null) return Unauthorized("Expired refresh token");
             return Ok(newAccessToken);
         }
+
+        [HttpGet("verify-email/{token}")]
+        public ActionResult VerifyEmail(string token)
+        {
+            var result = _userService.VerifyEmail(token);
+            if (result)
+            {
+                return Ok(new { message = "Email verified successfully" });
+            }
+            return BadRequest(new { message = "Invalid or expired verification token" });
+        }
     }
 }

@@ -8,9 +8,9 @@ namespace Theater_Management_BE.src.Application.Interfaces
         User? GetById(Guid value);
         User? GetByUsername(string value);
         User? GetByEmail(string value);
-        User? GetByPhoneNumber(string value);
+        User? GetByToken(string token);
         User? Update(User user);
         bool Delete(Guid userId);
-        User? GetByUsernameOrEmailOrPhoneNumber(string username, string email, string phoneNumber);
+        User? GetByUsernameOrEmail(string username, string email);
     }
 }

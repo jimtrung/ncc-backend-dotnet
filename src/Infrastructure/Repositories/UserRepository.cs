@@ -35,9 +35,9 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
             return _context.Users.FirstOrDefault(u => u.Email == value);
         }
 
-        public User? GetByPhoneNumber(string value)
+        public User? GetByToken(string token)
         {
-            return _context.Users.FirstOrDefault(u => u.PhoneNumber == value);
+            return _context.Users.FirstOrDefault(u => u.Token == token);
         }
 
         public User? Update(User user)
@@ -62,10 +62,10 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
             return true;
         }
 
-        public User? GetByUsernameOrEmailOrPhoneNumber(string username, string email, string phoneNumber)
+        public User? GetByUsernameOrEmail(string username, string email)
         {
             return _context.Users.FirstOrDefault(u =>
-                (u.Username == username) || (u.Email == email) || (u.PhoneNumber == phoneNumber)
+                (u.Username == username) || (u.Email == email)
             );
         }
     }
