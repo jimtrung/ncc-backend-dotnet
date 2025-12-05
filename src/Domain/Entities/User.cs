@@ -15,9 +15,6 @@ namespace Theater_Management_BE.src.Domain.Entities
         [Column("email")]
         public string Email { get; set; }
 
-        [Column("phone_number")]
-        public string PhoneNumber { get; set; }
-
         [Column("password")]
         public string Password { get; set; }
 
@@ -29,9 +26,6 @@ namespace Theater_Management_BE.src.Domain.Entities
 
         [Column("token")]
         public string? Token { get; set; }
-
-        [Column("otp")]
-        public string? OTP { get; set; }
 
         [Column("verified")]
         public bool Verified { get; set; }

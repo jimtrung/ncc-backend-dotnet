@@ -34,6 +34,7 @@ namespace Theater_Management_BE.src.Api.Controllers
         }
 
         [HttpPost]
+        // [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
         public ActionResult InsertMovie([FromBody] Movie movie)
         {
             try
@@ -48,6 +49,7 @@ namespace Theater_Management_BE.src.Api.Controllers
         }
 
         [HttpDelete]
+        // [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
         public ActionResult DeleteAllMovies()
         {
             try
@@ -62,6 +64,7 @@ namespace Theater_Management_BE.src.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        // [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
         public ActionResult DeleteMovieById(Guid id)
         {
             try
@@ -76,6 +79,7 @@ namespace Theater_Management_BE.src.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        // [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
         public ActionResult UpdateMovieById(Guid id, [FromBody] Movie movie)
         {
             try

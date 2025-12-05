@@ -39,6 +39,7 @@ namespace Theater_Management_BE.src.Api.Controllers
 
         // POST: /Showtime
         [HttpPost]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
         public ActionResult InsertShowtime([FromBody] Showtime showtime)
         {
             if (showtime == null)
@@ -73,6 +74,7 @@ namespace Theater_Management_BE.src.Api.Controllers
 
         // DELETE: /Showtime/{id}
         [HttpDelete("{id}")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
         public ActionResult DeleteShowtimeById(Guid id)
         {
             try
@@ -88,6 +90,7 @@ namespace Theater_Management_BE.src.Api.Controllers
 
         // DELETE: /Showtime
         [HttpDelete]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
         public ActionResult DeleteAllShowtimes()
         {
             try

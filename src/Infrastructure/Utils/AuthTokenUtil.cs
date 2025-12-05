@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using Theater_Management_BE.src.Domain.Entities;
 
 namespace Theater_Management_BE.src.Infrastructure.Utils
 {
@@ -19,7 +20,7 @@ namespace Theater_Management_BE.src.Infrastructure.Utils
             return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
         }
 
-        public string GenerateAccessToken(Guid userId)
+        public string GenerateAccessToken(Guid userId, UserRole role)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = GetKey();
@@ -27,7 +28,8 @@ namespace Theater_Management_BE.src.Infrastructure.Utils
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, userId.ToString())
+                    new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+                    new Claim(ClaimTypes.Role, role.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(15),
                 SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature)

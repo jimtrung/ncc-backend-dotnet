@@ -25,6 +25,7 @@ namespace Theater_Management_BE.src.Api.Controllers
         }
 
         [HttpPost]
+        // [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
         public ActionResult InsertAuditorium([FromBody] Auditorium auditorium)
         {
             try
@@ -39,6 +40,7 @@ namespace Theater_Management_BE.src.Api.Controllers
         }
 
         [HttpDelete]
+        // [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
         public ActionResult DeleteAllAuditoriums()
         {
             try
@@ -53,6 +55,7 @@ namespace Theater_Management_BE.src.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        // [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
         public ActionResult DeleteAuditoriumById(Guid id)
         {
             try
@@ -76,6 +79,7 @@ namespace Theater_Management_BE.src.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        // [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
         public ActionResult UpdateAuditoriumById(Guid id, [FromBody] Auditorium auditorium)
         {
             try
