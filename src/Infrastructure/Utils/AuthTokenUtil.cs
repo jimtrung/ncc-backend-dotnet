@@ -31,7 +31,7 @@ namespace Theater_Management_BE.src.Infrastructure.Utils
                     new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
                     new Claim(ClaimTypes.Role, role.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(15),
+                Expires = DateTime.UtcNow.AddMinutes(60),
                 SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature)
             };
 
