@@ -68,5 +68,10 @@ namespace Theater_Management_BE.src.Infrastructure.Repositories
                 (u.Username == username) || (u.Email == email)
             );
         }
+
+        public List<User> GetAllUsers()
+        {
+            return _context.Users.ToList();
+        }
     }
 }

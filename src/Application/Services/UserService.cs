@@ -131,5 +131,10 @@ namespace Theater_Management_BE.src.Application.Services
             if (id == Guid.Empty) throw new InvalidUserDataException("ID không hợp lệ");
             return _repo.GetById(id);
         }
+
+        public List<User> GetAllUsers()
+        {
+            return _repo.GetAllUsers();
+        }
     }
 }
