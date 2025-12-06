@@ -7,7 +7,7 @@ using Theater_Management_BE.src.Application.Interfaces;
 namespace Theater_Management_BE.src.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("user")]
     [Authorize]
     public class UserController : Controller
     {
@@ -25,11 +25,10 @@ namespace Theater_Management_BE.src.Api.Controllers
             var user = HttpContext.User;
 
             if (user?.Identity == null || !user.Identity.IsAuthenticated)
-                return Unauthorized("You must log in first, lil ape 🍌🚬");
+                return Unauthorized("Chưa đăng nhập");
 
             var userId = HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-            // Chuyển async sang sync bằng .Result
             User userInfo = _userService.GetUser(Guid.Parse(userId));
 
             return Ok(userInfo);

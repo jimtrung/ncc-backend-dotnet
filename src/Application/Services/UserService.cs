@@ -22,14 +22,14 @@ namespace Theater_Management_BE.src.Application.Services
 
         public User SignUp(SignUpRequest request)
         {
-            // Step 1: Basic validation
+            // 1. Kiểm tra rỗng và định dạng email
             if (request.Username == null) throw new InvalidUserDataException("Tên đăng nhập không được để trống");
             if (request.Email == null) throw new InvalidUserDataException("Email không được để trống");
             if (request.Password == null) throw new InvalidUserDataException("Mật khẩu không được để trống");
             if (!_emailValidator.IsValidEmail(request.Email))
                 throw new InvalidUserDataException("Định dạng email không hợp lệ");
             
-            // Step 2: Check existing user with specific error messages
+            // 2. Kiểm tra nếu tên người dùng hoặc email đã tồn tại
             var existingUserByUsername = _repo.GetByUsername(request.Username);
             if (existingUserByUsername != null) 
                 throw new UserAlreadyExistsException("Tên đăng nhập đã tồn tại");
@@ -38,11 +38,11 @@ namespace Theater_Management_BE.src.Application.Services
             if (existingUserByEmail != null) 
                 throw new UserAlreadyExistsException("Email đã được sử dụng");
 
-            // Step 3: Generate token and hash password
+            // 3. Tạo token (xác thực email) và hash mật khẩu
             string token = TokenUtil.GenerateToken();
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
-            // Step 4: Prepare user object
+            // 4. Tạo user object
             User user = new()
             {
                 Username = request.Username,
@@ -56,18 +56,21 @@ namespace Theater_Management_BE.src.Application.Services
                 UpdatedAt = DateTime.UtcNow
             };
 
-            // Step 5: Send verification email (fire-and-forget)
-            try
+            // 5. Gửi email xác thực (async - không chặn request)
+            _ = Task.Run(async () =>
             {
-                _emailValidator.SendVerificationEmail(user.Email, $"http://localhost:8080/auth/verify-email/{token}");
-                Console.WriteLine("[DEBUG] Email send task started");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("[DEBUG] Email send failed: " + ex.Message);
-            }
+                try
+                {
+                    await Task.Run(() => _emailValidator.SendVerificationEmail(user.Email, $"http://localhost:8080/auth/verify-email/{token}"));
+                    Console.WriteLine("[DEBUG] Email đã được gửi thành công");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("[DEBUG] Gửi email thất bại: " + ex.Message);
+                }
+            });
 
-            // Step 6: Save to DB
+            // 6. Lưu vào CSDL
             var savedUser = _repo.Add(user);
 
             return savedUser;
@@ -75,21 +78,21 @@ namespace Theater_Management_BE.src.Application.Services
 
         public TokenPair SignIn(SignInRequest request)
         {
-            // Step 1: Basic validation
+            // 1. Kiểm tra rỗng
             if (string.IsNullOrWhiteSpace(request.Username))
                 throw new InvalidUserDataException("Tên đăng nhập không được để trống");
             if (string.IsNullOrWhiteSpace(request.Password))
                 throw new InvalidUserDataException("Mật khẩu không được để trống");
 
-            // Step 2: Check existing user
+            // 2. Kiểm tra user tồn tại
             var user = _repo.GetByUsername(request.Username)
                        ?? throw new UserNotFoundException("Tên đăng nhập không tồn tại");
 
-            // Step 3: Check password
+            // 3. Kiểm tra mật khẩu
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
                 throw new InvalidCredentialsException("Mật khẩu không chính xác");
 
-            // Step 4: Generate tokens
+            // 4. Tạo token
             string refreshToken = _authTokenUtil.GenerateRefreshToken(user.Id);
             string accessToken = _authTokenUtil.GenerateAccessToken(user.Id, user.Role);
 
@@ -111,17 +114,15 @@ namespace Theater_Management_BE.src.Application.Services
         {
             if (string.IsNullOrWhiteSpace(token)) return false;
 
-            // Find user by token
+            // 1. Tìm user theo token
             var user = _repo.GetByToken(token);
             if (user == null) return false;
 
-            // Set user as verified
+            // 2. Đặt user đã xác thực
             user.Verified = true;
-            // Remove token (optional, or set to null)
             user.Token = null;
-            user.UpdatedAt = DateTime.UtcNow;
 
-            // Update in database
+            // 3. Cập nhật vào CSDL
             var updated = _repo.Update(user);
             return updated != null;
         }

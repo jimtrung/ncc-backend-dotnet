@@ -59,9 +59,9 @@ namespace Theater_Management_BE.src.Api.Controllers
         {
             var deleted = await _ticketRepository.DeleteTicketById(id);
             if (!deleted)
-                return NotFound($"Ticket with ID {id} not found.");
+                return NotFound($"Không tìm thấy vé với ID {id}.");
 
-            return Ok($"Ticket {id} deleted successfully.");
+            return Ok($"Đã xóa vé {id} thành công.");
         }
 
         // DELETE /ticket - xóa tất cả vé
@@ -69,7 +69,7 @@ namespace Theater_Management_BE.src.Api.Controllers
         public async Task<IActionResult> DeleteAllTickets()
         {
             await _ticketRepository.DeleteAllTickets();
-            return Ok("All tickets deleted successfully.");
+            return Ok("Đã xóa tất cả vé thành công.");
         }
 
         // GET /ticket/{id} - lấy vé theo ID
@@ -78,7 +78,7 @@ namespace Theater_Management_BE.src.Api.Controllers
         {
             var ticket = await _ticketRepository.GetTicketById(id);
             if (ticket == null)
-                return NotFound($"Ticket with ID {id} not found.");
+                return NotFound($"Không tìm thấy vé với ID {id}.");
 
             return Ok(ticket);
         }

@@ -6,7 +6,7 @@ using Theater_Management_BE.src.Domain.Entities;
 namespace Theater_Management_BE.src.Api.Controllers
 {
     [ApiController]
-    [Route("/[controller]")]
+    [Route("auth")]
     public class AuthController : Controller
     {
         private readonly UserService _userService;
@@ -34,7 +34,7 @@ namespace Theater_Management_BE.src.Api.Controllers
         public ActionResult<string> Refresh([FromBody] RefreshRequest request)
         {
             string newAccessToken = _userService.Refresh(request.RefreshToken);
-            if (newAccessToken == null) return Unauthorized("Expired refresh token");
+            if (newAccessToken == null) return Unauthorized("Token làm mới đã hết hạn");
             return Ok(newAccessToken);
         }
 
@@ -44,9 +44,9 @@ namespace Theater_Management_BE.src.Api.Controllers
             var result = _userService.VerifyEmail(token);
             if (result)
             {
-                return Ok(new { message = "Email verified successfully" });
+                return Ok(new { message = "Xác thực email thành công" });
             }
-            return BadRequest(new { message = "Invalid or expired verification token" });
+            return BadRequest(new { message = "Token xác thực không hợp lệ hoặc đã hết hạn" });
         }
     }
 }

@@ -28,8 +28,7 @@ namespace Theater_Management_BE.src.Api.Controllers
                     ActorId = actorId
                 });
             }
-
-            return Ok("Add actors to movie successfully");
+            return Ok("Thêm diễn viên vào phim thành công");
         }
     }
 }

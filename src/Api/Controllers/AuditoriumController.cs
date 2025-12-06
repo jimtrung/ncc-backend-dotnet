@@ -5,7 +5,7 @@ using Theater_Management_BE.src.Domain.Entities;
 namespace Theater_Management_BE.src.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("auditorium")]
     public class AuditoriumController : Controller
     {
         private readonly IAuditoriumRepository _auditoriumRepository;
@@ -25,47 +25,47 @@ namespace Theater_Management_BE.src.Api.Controllers
         }
 
         [HttpPost]
-        // [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
         public ActionResult InsertAuditorium([FromBody] Auditorium auditorium)
         {
             try
             {
                 _auditoriumRepository.Add(auditorium);
-                return StatusCode(201, "Auditorium insert successfully");
+                return StatusCode(201, "Thêm phòng chiếu thành công");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Failed to insert auditorium: " + ex.Message);
+                return StatusCode(500, "Không thể thêm phòng chiếu: " + ex.Message);
             }
         }
 
         [HttpDelete]
-        // [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
         public ActionResult DeleteAllAuditoriums()
         {
             try
             {
                 _auditoriumRepository.DeleteAll();
-                return Ok("All auditoriums have been deleted successfully.");
+                return Ok("Đã xóa tất cả phòng chiếu thành công.");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Failed to delete all auditoriums: " + ex.Message);
+                return StatusCode(500, "Không thể xóa tất cả phòng chiếu: " + ex.Message);
             }
         }
 
         [HttpDelete("{id}")]
-        // [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
         public ActionResult DeleteAuditoriumById(Guid id)
         {
             try
             {
                 _auditoriumRepository.Delete(id);
-                return Ok("Auditorium has been deleted successfully with id: " + id);
+                return Ok("Đã xóa phòng chiếu thành công với id: " + id);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Failed to delete auditorium: " + ex.Message);
+                return StatusCode(500, "Không thể xóa phòng chiếu: " + ex.Message);
             }
         }
 
@@ -79,17 +79,17 @@ namespace Theater_Management_BE.src.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        // [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "administrator")]
         public ActionResult UpdateAuditoriumById(Guid id, [FromBody] Auditorium auditorium)
         {
             try
             {
                 _auditoriumRepository.UpdateById(id, auditorium);
-                return Ok("Auditorium updated successfully with id: " + id);
+                return Ok("Cập nhật phòng chiếu thành công với id: " + id);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Failed to update auditorium: " + ex.Message);
+                return StatusCode(500, "Không thể cập nhật phòng chiếu: " + ex.Message);
             }
         }
     }

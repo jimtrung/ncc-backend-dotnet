@@ -30,13 +30,13 @@ namespace Theater_Management_BE.src.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Register PostgreSQL enum types
+            // Khai báo các enum
             modelBuilder.HasPostgresEnum<Provider>("provider_type");
             modelBuilder.HasPostgresEnum<UserRole>("role_type");
             modelBuilder.HasPostgresEnum<MovieGenre>("movie_genre");
 
             // Configure User enum properties
-            // Npgsql will handle conversion via MapEnum in Program.cs
+            // Npgsql sẽ tự động chuyển đổi via MapEnum trong Program.cs
             modelBuilder.Entity<User>()
                 .Property(u => u.Role)
                 .HasColumnType("role_type");

@@ -44,16 +44,16 @@ namespace Theater_Management_BE.src.Api.Controllers
         {
             if (showtime == null)
             {
-                return BadRequest("Showtime is null. Check JSON format.");
+                return BadRequest("Suất chiếu bị null. Kiểm tra định dạng JSON.");
             }
             try
             {
                 _showtimeRepository.Add(showtime);
-                return StatusCode(201, "Showtime inserted successfully");
+                return StatusCode(201, "Thêm suất chiếu thành công");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Failed to insert showtime: " + ex.Message);
+                return StatusCode(500, "Không thể thêm suất chiếu: " + ex.Message);
             }
         }
 
@@ -80,11 +80,11 @@ namespace Theater_Management_BE.src.Api.Controllers
             try
             {
                 _showtimeRepository.Delete(id);
-                return Ok("Showtime deleted successfully with id: " + id);
+                return Ok("Đã xóa suất chiếu thành công với id: " + id);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Failed to delete showtime: " + ex.Message);
+                return StatusCode(500, "Không thể xóa suất chiếu: " + ex.Message);
             }
         }
 
@@ -96,11 +96,11 @@ namespace Theater_Management_BE.src.Api.Controllers
             try
             {
                 _showtimeRepository.DeleteAll();
-                return Ok("All showtimes have been deleted successfully.");
+                return Ok("Đã xóa tất cả suất chiếu thành công.");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Failed to delete all showtimes: " + ex.Message);
+                return StatusCode(500, "Không thể xóa tất cả suất chiếu: " + ex.Message);
             }
         }
     }
